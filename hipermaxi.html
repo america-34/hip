@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hipermaxi - Tu Supermercado de Confianza</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        /* Fondo principal */
+        .background {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('https://i.pinimg.com/736x/0a/6a/f3/0a6af3500adfe75c306a6c856a944db0.jpg') center center/cover no-repeat;
+            filter: blur(8px) brightness(0.8);
+            z-index: 1;
+        }
+        
+        /* Sección principal */
+        .hero-section {
+            position: relative;
+            z-index: 3;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-shadow: 0 2px 8px #000;
+        }
+        
+        .title {
+            font-size: 6em;
+            font-weight: bold;
+            margin-bottom: 0.3em;
+            letter-spacing: 3px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .subtitle {
+            font-size: 2.2em;
+            margin-bottom: 2em;
+            text-align: center;
+            max-width: 800px;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 2px 8px #000, 0 0 20px #ea8a03; }
+            to { text-shadow: 0 2px 8px #000, 0 0 30px #ea8a03, 0 0 40px #ea8a03; }
+        }
+        
+        /* Menú de navegación */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 1.5em;
+            background: rgba(234, 138, 3, 0.95);
+            padding: 1.2em 2.5em;
+            border-radius: 0 0 2em 2em;
+            box-shadow: 0 4px 20px rgba(186, 104, 4, 0.5);
+            backdrop-filter: blur(10px);
+            width: 95vw;
+            max-width: 1200px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            padding: 0.6em 1.2em;
+            border-radius: 1em;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Estilos de secciones */
+        .section {
+            min-height: 100vh;
+            position: relative;
+            z-index: 20;
+            padding: 6em 2em 3em 2em;
+        }
+        
+        .section-bg {
+            backdrop-filter: blur(8px) brightness(1.1);
+            -webkit-backdrop-filter: blur(8px) brightness(1.1);
+        }
+        
+        .section h2 {
+            text-align: center;
+            color: #ea8a03;
+            font-size: 3.5em;
+            margin-bottom: 1.5em;
+            text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5em;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1.5em;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 2em;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-color: #ea8a03;
+        }
+        
+        .product-card img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1em;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        .product-card h3 {
+            color: #ea8a03;
+            font-size: 1.4em;
+            margin-bottom: 0.5em;
+        }
+        
+        .product-card .price {
+            color: #666;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 1em;
+        }
+        
+        .btn-add-cart {
+            background: linear-gradient(45deg, #3b3bff, #5555ff);
+            color: #fff;
+            border: none;
+            border-radius: 1.5em;
+            padding: 0.8em 2em;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 59, 255, 0.3);
+        }
+        
+        .btn-add-cart:hover {
+            background: linear-gradient(45deg, #2828ff, #4444ff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 59, 255, 0.4);
+        }
+        
+        /* Carrito de compras */
+        .cart-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1001;
+        }
+        
+        .cart-toggle {
+            background: linear-gradient(45deg, #ea8a03, #ff9f1a);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(234, 138, 3, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .cart-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(234, 138, 3, 0.6);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff3333;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .cart-panel {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            background: white;
+            border-radius: 1.5em;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2em;
+            width: 350px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .cart-panel h3 {
+            color: #ea8a03;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5em 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-total {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #ea8a03;
+            text-align: center;
+            margin-top: 1em;
+            padding-top: 1em;
+            border-top: 2px solid #ea8a03;
+        }
+        
+        .btn-checkout {
+            width: 100%;
+            background: linear-gradient(45deg, #28a745, #34ce57);
+            color: white;
+            border: none;
+            border-radius: 1em;
+            padding: 1em;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-checkout:hover {
+            background: linear-gradient(45deg, #218838, #28a745);
+            transform: translateY(-2px);
+        }
+        
+        /* Verduras flotantes */
+        .veggie {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
+            opacity: 0.85;
+            animation: float 12s linear infinite;
+        }
+        
+        .veggie1 { left: 10%; top: 80%; animation-duration: 13s; }
+        .veggie2 { left: 25%; top: 90%; animation-duration: 10s; }
+        .veggie3 { left: 40%; top: 85%; animation-duration: 15s; }
+        .veggie4 { left: 60%; top: 95%; animation-duration: 12s; }
+        .veggie5 { left: 75%; top: 88%; animation-duration: 14s; }
+        .veggie6 { left: 85%; top: 92%; animation-duration: 11s; }
+        .veggie7 { left: 55%; top: 98%; animation-duration: 16s; }
+        .veggie8 { left: 33%; top: 93%; animation-duration: 13s; }
+        
+        @keyframes float {
+            0% { transform: translateY(0) scale(1) rotate(0deg); }
+            100% { transform: translateY(-110vh) scale(1.1) rotate(360deg); }
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .title { font-size: 3em; }
+            .subtitle { font-size: 1.5em; }
+            .menu { padding: 1em; gap: 1em; }
+            .menu a { font-size: 0.9em; padding: 0.5em 1em; }
+            .product-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; }
+            .cart-panel { width: 300px; }
+            .section { padding: 5em 1em 2em 1em; }
+            .section h2 { font-size: 2.5em; }
+        }
+        
+        /* Fondos específicos para cada sección */
+        #frutas { background: url('') center center/cover no-repeat; }
+        #verduras { background: url('https://i.pinimg.com/736x/8e/8a/77/8e8a7719b4bc845b7b0b1e8f1db5a2e7.jpg') center center/cover no-repeat; }
+        #carnes { background: url('https://i.pinimg.com/736x/3d/4a/1e/3d4a1e9a5c3b2f8d6e7a9b0c1d2e3f4g.jpg') center center/cover no-repeat; }
+        #lacteos { background: url('https://i.pinimg.com/736x/2c/3b/4a/2c3b4a5d6e7f8g9h0i1j2k3l4m5n6o7p.jpg') center center/cover no-repeat; }
+        #bebidas { background: url('https://i.pinimg.com/736x/1a/2b/3c/1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p.jpg') center center/cover no-repeat; }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    
+    <!-- Menú de navegación -->
+    <nav class="menu">
+        <a href="#inicio">🏠 Inicio</a>
+        <a href="#frutas">🍎 Frutas</a>
+        <a href="#verduras">🥬 Verduras</a>
+        <a href="#carnes">🥩 Carnes</a>
+        <a href="#lacteos">🥛 Lácteos</a>
+        <a href="#bebidas">🥤 Bebidas</a>
+    </nav>
+    
+    <!-- Sección principal -->
+    <section id="inicio" class="hero-section">
+        <div class="title">Hipermaxi</div>
+        <div class="subtitle">¡Tu supermercado de confianza con envíos a domicilio!</div>
+    </section>
+    
+    <!-- Sección Frutas -->
+    <section id="frutas" class="section section-bg">
+        <h2>🍎 Frutas Frescas</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/98/52/ca/9852ca687b2879d00bd7a4838068bed1.jpg" alt="Manzana">
+                <h3>Manzana Roja</h3>
+                <div class="price">Bs. 8.50/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Manzana Roja', 8.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/02/49/5f/02495fb1b8bd32a24fb8eb483a18a074.jpg" alt="Banana">
+                <h3>Banana</h3>
+                <div class="price">Bs. 6.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Banana', 6.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/65/b2/02/65b202cc571efdff899b471a68a0d774.jpg" alt="Naranja">
+                <h3>Naranja</h3>
+                <div class="price">Bs. 7.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Naranja', 7.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/7d/8e/e9/7d8ee9a341274df2bdd41765fb2260bf.jpg" alt="Pera">
+                <h3>Pera</h3>
+                <div class="price">Bs. 9.50/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Pera', 9.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/bd/25/07/bd2507eef8fda01f9fb7544a10861509.jpg" alt="Sandía">
+                <h3>Sandía</h3>
+                <div class="price">Bs. 4.50/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Sandía', 4.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/95/8b/23/958b232c48e9649b8bcba7b02ada834a.jpg" alt="Uva">
+                <h3>Uva</h3>
+                <div class="price">Bs. 15.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Uva', 15.00)">Añadir al carrito</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección Verduras -->
+    <section id="verduras" class="section section-bg">
+        <h2>🥬 Verduras Frescas</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/24/1d/3e/241d3e5c718865417636b6410a82c455.jpg" alt="Tomate">
+                <h3>Tomate</h3>
+                <div class="price">Bs. 5.50/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Tomate', 5.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/4a/cc/5f/4acc5f804f89cd17ef7efe9d87c2e37b.jpg" alt="Zanahoria">
+                <h3>Zanahoria</h3>
+                <div class="price">Bs. 4.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Zanahoria', 4.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/ab/1c/20/ab1c205a0ffa0c94f779632024619f21.jpg" alt="Lechuga">
+                <h3>Lechuga</h3>
+                <div class="price">Bs. 3.50/unidad</div>
+                <button class="btn-add-cart" onclick="addToCart('Lechuga', 3.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/98/4e/bf/984ebf8aafddce96f7455190d0f751d2.jpg" alt="Brócoli">
+                <h3>Brócoli</h3>
+                <div class="price">Bs. 8.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Brócoli', 8.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/94/86/da/9486daf4f03da4f6b06aad462846c968.jpg" alt="Cebolla">
+                <h3>Cebolla</h3>
+                <div class="price">Bs. 3.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Cebolla', 3.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/ad/37/9f/ad379fea630aed049444dc0b8c20c778.jpg" alt="Papa">
+                <h3>Papa</h3>
+                <div class="price">Bs. 2.50/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Papa', 2.50)">Añadir al carrito</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección Carnes -->
+    <section id="carnes" class="section section-bg">
+        <h2>🥩 Carnes Frescas</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/89/19/58/8919589e2abd8577ca90dabe34c9a57a.jpg" alt="Carne de Res">
+                <h3>Carne de Res</h3>
+                <div class="price">Bs. 35.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Carne de Res', 35.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/91/1e/ce/911ece2bc434505046fc60c64e52cdd7.jpg" alt="Pollo">
+                <h3>Pollo Entero</h3>
+                <div class="price">Bs. 18.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Pollo Entero', 18.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/8d/fb/bb/8dfbbb0c9dc3f486d9ff94e021642a74.jpg" alt="Cerdo">
+                <h3>Carne de Cerdo</h3>
+                <div class="price">Bs. 28.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Carne de Cerdo', 28.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/3f/1d/56/3f1d56c68a9b67b47eb370148b971db2.jpg" alt="Pescado">
+                <h3>Pescado Fresco</h3>
+                <div class="price">Bs. 25.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Pescado Fresco', 25.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/63/4e/4c/634e4cf5443d691ea02b8c86668143b7.jpg" alt="Chorizo">
+                <h3>Chorizo</h3>
+                <div class="price">Bs. 22.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Chorizo', 22.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/83/25/9a/83259a0d9a335053c6073b9197812766.jpg" alt="Jamón">
+                <h3>Jamón</h3>
+                <div class="price">Bs. 45.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Jamón', 45.00)">Añadir al carrito</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección Lácteos -->
+    <section id="lacteos" class="section section-bg">
+        <h2>🥛 Lácteos</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/6e/ea/5e/6eea5e0c4fce9a8eb57bd4a0f3ba7962.jpg" alt="Leche">
+                <h3>Leche Entera</h3>
+                <div class="price">Bs. 7.50/litro</div>
+                <button class="btn-add-cart" onclick="addToCart('Leche Entera', 7.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/38/74/4f/38744f5b0a39ef9c7b6272016915da56.jpg" alt="Queso">
+                <h3>Queso Fresco</h3>
+                <div class="price">Bs. 25.00/kg</div>
+                <button class="btn-add-cart" onclick="addToCart('Queso Fresco', 25.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/c3/68/3e/c3683e232918a69c8a6c310140d2f457.jpg" alt="Yogurt">
+                <h3>Yogurt Natural</h3>
+                <div class="price">Bs. 4.50/unidad</div>
+                <button class="btn-add-cart" onclick="addToCart('Yogurt Natural', 4.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/87/6a/ca/876aca47f8d83aa0407e66af48e69004.jpg" alt="Mantequilla">
+                <h3>Mantequilla</h3>
+                <div class="price">Bs. 12.00/250g</div>
+                <button class="btn-add-cart" onclick="addToCart('Mantequilla', 12.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/d1/19/08/d11908de948bce47edb4c5ccd9a1762b.jpg" alt="Crema">
+                <h3>Crema de Leche</h3>
+                <div class="price">Bs. 8.00/200ml</div>
+                <button class="btn-add-cart" onclick="addToCart('Crema de Leche', 8.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/09/ec/9c/09ec9c59df7238687a70c3afd9748966.jpg" alt="Huevos">
+                <h3>Huevos</h3>
+                <div class="price">Bs. 18.00/docena</div>
+                <button class="btn-add-cart" onclick="addToCart('Huevos', 18.00)">Añadir al carrito</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección Bebidas -->
+    <section id="bebidas" class="section section-bg">
+        <h2>🥤 Bebidas</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/6b/cb/00/6bcb004c2996f2c96ddf3d1bb7e7c1f7.jpg" alt="Coca Cola">
+                <h3>Coca Cola</h3>
+                <div class="price">Bs. 6.50/500ml</div>
+                <button class="btn-add-cart" onclick="addToCart('Coca Cola', 6.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/eb/c0/b0/ebc0b0efe9e5c9951be12a07ffdf4a21.jpg" alt="Agua">
+                <h3>Agua Mineral</h3>
+                <div class="price">Bs. 3.00/500ml</div>
+                <button class="btn-add-cart" onclick="addToCart('Agua Mineral', 3.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/b3/69/81/b3698135624d38a7e027127bf90762cf.jpg" alt="Jugo">
+                <h3>Jugo de Naranja</h3>
+                <div class="price">Bs. 8.50/1L</div>
+                <button class="btn-add-cart" onclick="addToCart('Jugo de Naranja', 8.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/9b/41/cd/9b41cd4e4c039857856b2c6c8faf49ca.jpg" alt="Cerveza">
+                <h3>Cerveza Paceña</h3>
+                <div class="price">Bs. 12.00/botella</div>
+                <button class="btn-add-cart" onclick="addToCart('Cerveza Paceña', 12.00)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/db/c7/c2/dbc7c2722186e278de15748dcfdb4a3e.jpg" alt="Té">
+                <h3>Té Helado</h3>
+                <div class="price">Bs. 5.50/500ml</div>
+                <button class="btn-add-cart" onclick="addToCart('Té Helado', 5.50)">Añadir al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="https://i.pinimg.com/736x/97/9e/97/979e97299e9bdd4eb2c48d47c0b0c7d3.jpg" alt="Energética">
+                <h3>Bebida Energética</h3>
+                <div class="price">Bs. 15.00/350ml</div>
+                <button class="btn-add-cart" onclick="addToCart('Bebida Energética', 15.00)">Añadir al carrito</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Carrito de compras -->
+    <div class="cart-container">
+        <button class="cart-toggle" onclick="toggleCart()">
+            🛒
+            <span class="cart-count" id="cart-count">0</span>
+        </button>
+        <div class="cart-panel" id="cart-panel">
+            <h3>🛒 Tu Carrito</h3>
+            <div id="cart-items"></div>
+            <div class="cart-total" id="cart-total">Total: Bs. 0.00</div>
+            <button class="btn-checkout" onclick="checkout()">Finalizar Compra</button>
+        </div>
+    </div>
+    
+    <!-- Verduras flotantes -->
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135620.png" class="veggie veggie1" alt="Tomate">
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135644.png" class="veggie veggie2" alt="Zanahoria">
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135651.png" class="veggie veggie3" alt="Lechuga">
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135652.png" class="veggie veggie4" alt="Brócoli">
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135661.png" class="veggie veggie5" alt="Cebolla">
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135659.png" class="veggie veggie6" alt="Pimiento">
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135645.png" class="veggie veggie7" alt="Papa">
+    <img src="https://cdn-icons-png.flaticon.com/512/135/135647.png" class="veggie veggie8" alt="Pepino">
+
+    <script>
+        // Sistema de carrito de compras
+        let cart = [];
+        let cartTotal = 0;
+        
+        function addToCart(name, price) {
+            // Buscar si el producto ya existe en el carrito
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price,
+                    quantity: 1
+                });
+            }
+            
+            updateCartDisplay();
+            
+            // Animación de confirmación
+            showAddToCartAnimation();
+        }
+        
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+        
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                removeFromCart(index);
+            } else {
+                updateCartDisplay();
+            }
+        }
+        
+        function updateCartDisplay() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotalElement = document.getElementById('cart-total');
+            
+            // Actualizar contador
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+            
+            // Actualizar lista de productos
+            cartItems.innerHTML = '';
+            cartTotal = 0;
+            
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                cartTotal += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        <small>Bs. ${item.price.toFixed(2)} c/u</small>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5em;">
+                        <button onclick="updateQuantity(${index}, -1)" style="background: #ff4444; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer;">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="updateQuantity(${index}, 1)" style="background: #44ff44; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer;">+</button>
+                        <button onclick="removeFromCart(${index})" style="background: #ff4444; color: white; border: none; border-radius: 0.5em; padding: 0.2em 0.5em; cursor: pointer; margin-left: 0.5em;">🗑️</button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
+            // Actualizar total
+            cartTotalElement.textContent = `Total: Bs. ${cartTotal.toFixed(2)}`;
+        }
+        
+        function toggleCart() {
+            const cartPanel = document.getElementById('cart-panel');
+            cartPanel.style.display = cartPanel.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Tu carrito está vacío. Agrega algunos productos primero.');
+                return;
+            }
+            
+            const orderDetails = cart.map(item => 
+                `${item.name} x${item.quantity} - Bs. ${(item.price * item.quantity).toFixed(2)}`
+            ).join('\n');
+            
+            const message = `¡Gracias por tu compra en Hipermaxi!\n\nResumen de tu pedido:\n${orderDetails}\n\nTotal: Bs. ${cartTotal.toFixed(2)}\n\n¿Confirmas tu pedido? Te contactaremos para coordinar la entrega.`;
+            
+            if (confirm(message)) {
+                // Simular proceso de compra
+                alert('¡Pedido confirmado! 🎉\n\nTe contactaremos en los próximos minutos para coordinar la entrega.\n\n¡Gracias por elegir Hipermaxi!');
+                
+                // Limpiar carrito
+                cart = [];
+                updateCartDisplay();
+                toggleCart();
+            }
+        }
+        
+        function showAddToCartAnimation() {
+            const cartToggle = document.querySelector('.cart-toggle');
+            cartToggle.style.transform = 'scale(1.2)';
+            cartToggle.style.background = 'linear-gradient(45deg, #28a745, #34ce57)';
+            
+            setTimeout(() => {
+                cartToggle.style.transform = 'scale(1)';
+                cartToggle.style.background = 'linear-gradient(45deg, #ea8a03, #ff9f1a)';
+            }, 300);
+        }
+        
+        // Generador de burbujas de verduras
+        const veggieBubbles = [
+            "https://cdn-icons-png.flaticon.com/512/135/135620.png", // Tomate
+            "https://cdn-icons-png.flaticon.com/512/135/135644.png", // Zanahoria
+            "https://cdn-icons-png.flaticon.com/512/135/135651.png", // Lechuga
+            "https://cdn-icons-png.flaticon.com/512/135/135652.png", // Brócoli
+            "https://cdn-icons-png.flaticon.com/512/135/135661.png", // Cebolla
+            "https://cdn-icons-png.flaticon.com/512/135/135659.png", // Pimiento
+            "https://cdn-icons-png.flaticon.com/512/135/135645.png", // Papa
+            "https://cdn-icons-png.flaticon.com/512/135/135647.png"  // Pepino
+        ];
+        
+        function randomBetween(a, b) {
+            return a + Math.random() * (b - a);
+        }
+        
+        function createVeggieBubble() {
+            const img = document.createElement('img');
+            img.src = veggieBubbles[Math.floor(Math.random() * veggieBubbles.length)];
+            img.className = 'veggie-bubble-dynamic';
+            img.style.position = 'fixed';
+            img.style.left = randomBetween(5, 90) + 'vw';
+            img.style.top = '100vh';
+            img.style.zIndex = '2';
+            img.style.pointerEvents = 'none';
+            
+            const size = randomBetween(30, 50);
+            img.style.width = size + 'px';
+            img.style.height = size + 'px';
+            img.style.opacity = randomBetween(0.6, 0.8);
+            img.style.filter = 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))';
+            
+            document.body.appendChild(img);
+            
+            // Animación
+            const duration = randomBetween(8, 15);
+            const rotate = randomBetween(-180, 180);
+            
+            img.animate([
+                { 
+                    transform: `translateY(0) rotate(0deg) scale(1)`,
+                    opacity: img.style.opacity
+                },
+                { 
+                    transform: `translateY(-110vh) rotate(${rotate}deg) scale(1.2)`,
+                    opacity: 0
+                }
+            ], {
+                duration: duration * 1000,
+                easing: 'ease-out'
+            });
+            
+            setTimeout(() => {
+                img.remove();
+            }, duration * 1000);
+        }
+        
+        // Generar burbujas cada cierto tiempo
+        setInterval(createVeggieBubble, 1200);
+        
+        // Navegación suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Cerrar carrito al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            const cartContainer = document.querySelector('.cart-container');
+            const cartPanel = document.getElementById('cart-panel');
+            
+            if (!cartContainer.contains(e.target) && cartPanel.style.display === 'block') {
+                cartPanel.style.display = 'none';
+            }
+        });
+        
+        // Inicializar carrito
+        updateCartDisplay();
+        
+        // Animación de entrada para las cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Aplicar animación a las cards cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+        
+        // Mensaje de bienvenida
+        setTimeout(() => {
+            const welcomeToast = document.createElement('div');
+            welcomeToast.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 100px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: linear-gradient(45deg, #ea8a03, #ff9f1a);
+                    color: white;
+                    padding: 1em 2em;
+                    border-radius: 2em;
+                    box-shadow: 0 4px 20px rgba(234, 138, 3, 0.4);
+                    z-index: 1002;
+                    text-align: center;
+                    font-weight: bold;
+                    animation: slideDown 0.5s ease-out;
+                ">
+                    🎉 ¡Bienvenido a Hipermaxi! Explora nuestros productos frescos y de calidad
+                </div>
+            `;
+            document.body.appendChild(welcomeToast);
+            
+            setTimeout(() => {
+                welcomeToast.remove();
+            }, 4000);
+        }, 2000);
+    </script>
+    
+    <style>
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        .veggie-bubble-dynamic {
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+            will-change: transform;
+        }
+        
+        /* Efectos adicionales para mejorar la experiencia */
+        .cart-item button:hover {
+            transform: scale(1.1);
+        }
+        
+        .product-card {
+            will-change: transform;
+        }
+        
+        /* Scrollbar personalizada */
+        .cart-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .cart-panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .cart-panel::-webkit-scrollbar-thumb {
+            background: #ea8a03;
+            border-radius: 3px;
+        }
+        
+        .cart-panel::-webkit-scrollbar-thumb:hover {
+            background: #d17a02;
+        }
+        
+        /* Animación para el menú */
+        .menu a {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .menu a:hover::before {
+            left: 100%;
+        }
+    </style>
+</body>
+</html>
+<!-- Animación de billetes tipo confeti -->
+<style>
+    .bill-confetti {
+        position: fixed;
+        z-index: 2000;
+        pointer-events: none;
+        width: 40px;
+        height: 20px;
+        background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') center/contain no-repeat;
+        opacity: 0.85;
+        animation: bill-fall 1.5s linear forwards;
+    }
+    @keyframes bill-fall {
+        0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translateY(100vh) rotate(360deg) scale(1.2); opacity: 0; }
+    }
+    .cart-delivery-animation {
+        position: fixed;
+        left: -120px;
+        bottom: 60px;
+        z-index: 2001;
+        width: 120px;
+        height: 80px;
+        pointer-events: none;
+        animation: cart-move 2.5s cubic-bezier(.77,0,.18,1) forwards;
+    }
+    @keyframes cart-move {
+        0% { left: -120px; }
+        80% { left: 60vw; }
+        100% { left: 110vw; opacity: 0; }
+    }
+    .cart-delivery-msg {
+        position: fixed;
+        left: 50%;
+        bottom: 160px;
+        transform: translateX(-50%);
+        background: linear-gradient(45deg, #ea8a03, #ff9f1a);
+        color: #fff;
+        padding: 1em 2em;
+        border-radius: 2em;
+        font-weight: bold;
+        font-size: 1.2em;
+        z-index: 2002;
+        box-shadow: 0 4px 20px rgba(234, 138, 3, 0.4);
+        animation: slideDown 0.5s;
+    }
+</style>
+<script>
+   // Sobrescribir addToCart para incluir confeti
+    const originalAddToCart = addToCart;
+    window.addToCart = function(name, price) {
+        originalAddToCart(name, price);
+        showBillConfetti();
+    };
+
+    // Animación de carrito de entrega
+    function showCartDeliveryAnimation() {
+        const cartImg = document.createElement('img');
+        cartImg.src = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
+        cartImg.className = 'cart-delivery-animation';
+        cartImg.alt = 'Carrito en camino';
+        document.body.appendChild(cartImg);
+
+        const msg = document.createElement('div');
+        msg.className = 'cart-delivery-msg';
+        msg.innerHTML = '¡Tu pedido está en camino! 🚚';
+
+        document.body.appendChild(msg);
+
+        setTimeout(() => {
+            cartImg.remove();
+            msg.remove();
+        }, 2600);
+    }
+
+    // Solicitar datos de envío al finalizar compra
+    const originalCheckout = checkout;
+    window.checkout = function() {
+        if (cart.length === 0) {
+            alert('Tu carrito está vacío. Agrega algunos productos primero.');
+            return;
+        }
+
+        // Formulario simple de datos
+        let nombre = prompt('Por favor, ingresa tu nombre completo para el envío:');
+        if (!nombre) return alert('Debes ingresar tu nombre para continuar.');
+        let direccion = prompt('Ingresa tu dirección de entrega:');
+        if (!direccion) return alert('Debes ingresar tu dirección para continuar.');
+        let telefono = prompt('Ingresa tu número de teléfono:');
+        if (!telefono) return alert('Debes ingresar tu teléfono para continuar.');
+
+        const orderDetails = cart.map(item =>
+            `${item.name} x${item.quantity} - Bs. ${(item.price * item.quantity).toFixed(2)}`
+        ).join('\n');
+
+        const message = `¡Gracias por tu compra en Hipermaxi!\n\nResumen de tu pedido:\n${orderDetails}\n\nTotal: Bs. ${cartTotal.toFixed(2)}\n\nDatos de envío:\nNombre: ${nombre}\nDirección: ${direccion}\nTeléfono: ${telefono}\n\n¿Confirmas tu pedido?`;
+
+        if (confirm(message)) {
+            // Simular proceso de compra
+            showCartDeliveryAnimation();
+            setTimeout(() => {
+                alert('¡Pedido confirmado! 🎉\n\nTe contactaremos en los próximos minutos para coordinar la entrega.\n\n¡Gracias por elegir Hipermaxi!');
+                cart = [];
+                updateCartDisplay();
+                toggleCart();
+            }, 2600);
+        }
+    };
+</script>
+<script>
+// Animación de carrito grande al centro al finalizar compra
+function showBigCartDeliveryAnimation() {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.left = 0;
+    overlay.style.top = 0;
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.background = 'rgba(255,255,255,0.7)';
+    overlay.style.zIndex = 3000;
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+
+    const cartImg = document.createElement('img');
+    cartImg.src = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
+    cartImg.alt = 'Carrito en camino';
+    cartImg.style.width = '320px';
+    cartImg.style.height = '220px';
+    cartImg.style.animation = 'big-cart-bounce 2.2s cubic-bezier(.77,0,.18,1) forwards';
+
+    overlay.appendChild(cartImg);
+
+    const msg = document.createElement('div');
+    msg.className = 'cart-delivery-msg';
+    msg.style.position = 'absolute';
+    msg.style.bottom = '18vh';
+    msg.style.left = '50%';
+    msg.style.transform = 'translateX(-50%)';
+    msg.style.fontSize = '2em';
+    msg.innerHTML = '¡Tu pedido está en camino! 🚚';
+
+    overlay.appendChild(msg);
+
+    document.body.appendChild(overlay);
+
+    setTimeout(() => {
+        overlay.remove();
+    }, 2400);
+}
+
+// Sobrescribir checkout para usar la animación grande al centro
+const prevCheckout = window.checkout;
+window.checkout = function() {
+    if (cart.length === 0) {
+        alert('Tu carrito está vacío. Agrega algunos productos primero.');
+        return;
+    }
+
+    let nombre = prompt('Por favor, ingresa tu nombre completo para el envío:');
+    if (!nombre) return alert('Debes ingresar tu nombre para continuar.');
+    let direccion = prompt('Ingresa tu dirección de entrega:');
+    if (!direccion) return alert('Debes ingresar tu dirección para continuar.');
+    let telefono = prompt('Ingresa tu número de teléfono:');
+    if (!telefono) return alert('Debes ingresar tu teléfono para continuar.');
+
+    const orderDetails = cart.map(item =>
+        `${item.name} x${item.quantity} - Bs. ${(item.price * item.quantity).toFixed(2)}`
+    ).join('\n');
+
+    const message = `¡Gracias por tu compra en Hipermaxi!\n\nResumen de tu pedido:\n${orderDetails}\n\nTotal: Bs. ${cartTotal.toFixed(2)}\n\nDatos de envío:\nNombre: ${nombre}\nDirección: ${direccion}\nTeléfono: ${telefono}\n\n¿Confirmas tu pedido?`;
+
+    if (confirm(message)) {
+        showBigCartDeliveryAnimation();
+        setTimeout(() => {
+            alert('¡Pedido confirmado! 🎉\n\nTe contactaremos en los próximos minutos para coordinar la entrega.\n\n¡Gracias por elegir Hipermaxi!');
+            cart = [];
+            updateCartDisplay();
+            toggleCart();
+        }, 2400);
+    }
+};
+
+// Animación de billetes alrededor del botón al hacer compra
+function showButtonBillConfetti(btn) {
+    for (let i = 0; i < 12; i++) {
+        setTimeout(() => {
+            const rect = btn.getBoundingClientRect();
+            const bill = document.createElement('div');
+            bill.className = 'bill-confetti';
+            bill.style.left = (rect.left + rect.width / 2 - 20 + (Math.random() - 0.5) * 60) + 'px';
+            bill.style.top = (rect.top + rect.height / 2 - 10 + (Math.random() - 0.5) * 20) + 'px';
+            bill.style.width = '40px';
+            bill.style.height = '20px';
+            bill.style.background = "url(') center/contain no-repeat";
+            bill.style.opacity = 0.9;
+            bill.style.zIndex = 2500;
+            bill.style.pointerEvents = 'none';
+            bill.style.position = 'fixed';
+            bill.style.animation = 'bill-fall-btn 1.2s linear forwards';
+            bill.style.transform = `rotate(${Math.random()*360}deg) scale(${0.8 + Math.random()*0.6})`;
+            bill.style.filter = `hue-rotate(${Math.random()*60-30}deg)`;
+            document.body.appendChild(bill);
+            setTimeout(() => bill.remove(), 1300);
+        }, i * 40);
+    }
+}
+
+// Delegar evento a todos los botones de compra
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-add-cart').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            showButtonBillConfetti(this);
+        });
+    });
+});
+
+// Animación de billetes para botón
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes bill-fall-btn {
+    0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg);}
+    80% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(80px) scale(1.2) rotate(360deg);}
+}
+@keyframes big-cart-bounce {
+    0% { transform: scale(0.2) translateY(0);}
+    60% { transform: scale(1.1) translateY(-30px);}
+    80% { transform: scale(0.95) translateY(0);}
+    100% { transform: scale(1) translateY(0);}
+}
+`;
+document.head.appendChild(style);
+</script>
+<!-- Emoji de dinero al presionar botón de compra -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-add-cart').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const moneyEmoji = document.createElement('div');
+                    moneyEmoji.textContent = ['💸','💵','🤑','💰'][Math.floor(Math.random()*4)];
+                    moneyEmoji.style.position = 'fixed';
+                    const rect = btn.getBoundingClientRect();
+                    moneyEmoji.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*40) + 'px';
+                    moneyEmoji.style.top = (rect.top + rect.height/2 + (Math.random()-0.5)*10) + 'px';
+                    moneyEmoji.style.fontSize = '2em';
+                    moneyEmoji.style.zIndex = 2600;
+                    moneyEmoji.style.pointerEvents = 'none';
+                    moneyEmoji.style.opacity = 1;
+                    moneyEmoji.style.transition = 'transform 1s, opacity 1s';
+                    document.body.appendChild(moneyEmoji);
+                    setTimeout(() => {
+                        moneyEmoji.style.transform = `translateY(-60px) scale(1.3)`;
+                        moneyEmoji.style.opacity = 0;
+                    }, 10);
+                    setTimeout(() => moneyEmoji.remove(), 1100);
+                }, i * 60);
+            }
+        });
+    });
+});
+</script>
+
